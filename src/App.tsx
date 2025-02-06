@@ -6,8 +6,9 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import { getLoggedInUser, LoggedUser } from "./network/timecard.api"
 import MainPage from "./pages/MainPage"
 import { EventProvider } from "./context/EventProvider"
+import UserRelatoryPage from "./pages/UserRelatoryPage"
+import CreateUserPage from "./pages/CreateUserPage"
 
-// Componente interno que usa useNavigate
 const AppContent = () => {
   const [loggedInUser, setLoggedInUser] = useState<LoggedUser | null>(null)
 
@@ -57,6 +58,12 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<MainPage user={loggedInUser} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+            {loggedInUser?.role === "admin" && (
+              <Route path="/userinfo" element={<UserRelatoryPage />} />
+            )}
+            {loggedInUser?.role === "admin" && (
+              <Route path="/createuser" element={<CreateUserPage />} />
+            )}
           </Routes>
         ) : (
           <div className="text-center">

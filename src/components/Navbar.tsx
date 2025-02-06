@@ -26,9 +26,16 @@ const NavBar = ({
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           <Nav>
-            <Nav.Link as={Link} to={"/privacy"}>
-              Privacy
-            </Nav.Link>
+            {loggedInUser?.role === "admin" && (
+              <Nav.Link as={Link} to={"/userinfo"}>
+                User info
+              </Nav.Link>
+            )}
+            {loggedInUser?.role === "admin" && (
+              <Nav.Link as={Link} to={"/createuser"}>
+                Create New user
+              </Nav.Link>
+            )}
           </Nav>
           <Nav className="ms-auto">
             {loggedInUser ? (
