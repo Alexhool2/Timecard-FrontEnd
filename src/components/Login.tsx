@@ -25,7 +25,7 @@ const Login = ({ onLoginSuccessful, onDismiss }: LoginProps) => {
     try {
       const user = await TimeCardApi.login(credentials)
 
-      // Atualiza o estado do usuário no App
+      // change user state on app
       onLoginSuccessful(user)
     } catch (error) {
       console.error("Login error details:", error)

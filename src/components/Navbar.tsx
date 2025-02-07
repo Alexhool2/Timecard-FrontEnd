@@ -36,6 +36,11 @@ const NavBar = ({
                 Create New user
               </Nav.Link>
             )}
+            {loggedInUser?.role === "admin" && (
+              <Nav.Link as={Link} to={"/reset-password"}>
+                Change password
+              </Nav.Link>
+            )}
           </Nav>
           <Nav className="ms-auto">
             {loggedInUser ? (

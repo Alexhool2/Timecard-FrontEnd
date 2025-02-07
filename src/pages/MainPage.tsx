@@ -33,7 +33,7 @@ const MainPage = ({ user }: MainPageProps) => {
         if (storedEventId) {
           setEventId(parseInt(storedEventId, 10))
         } else {
-          // Se não houver no localStorage, buscar do backend
+          // if cannot find on local storage check in backend
           try {
             const { eventID } = await getLoggedInUser()
             if (eventID !== null && eventID !== -1) {
@@ -63,10 +63,13 @@ const MainPage = ({ user }: MainPageProps) => {
         </Col>
       </Row>
       <Row className="my-4">
-        <Col>
+        <Col className="d-grid gap-2 d-sm-flex justify-content-center">
           <StartTimeButton userId={user.id} />
+
           <StartLunchButton />
+
           <EndLunchButton />
+
           <EndTimeButton />
         </Col>
       </Row>

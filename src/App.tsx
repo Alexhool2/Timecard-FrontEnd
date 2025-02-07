@@ -2,18 +2,26 @@ import Navbar from "./components/Navbar"
 import Login from "./components/Login"
 import "./App.css"
 import { useEffect, useState } from "react"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom"
 import { getLoggedInUser, LoggedUser } from "./network/timecard.api"
 import MainPage from "./pages/MainPage"
 import { EventProvider } from "./context/EventProvider"
 import UserRelatoryPage from "./pages/UserRelatoryPage"
 import CreateUserPage from "./pages/CreateUserPage"
+import ResetPassword from "./pages/ResetPassword"
 
 const AppContent = () => {
   const [loggedInUser, setLoggedInUser] = useState<LoggedUser | null>(null)
 
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchLoggedInUser() {
@@ -40,6 +48,7 @@ const AppContent = () => {
         onLoginClicked={() => setShowLoginModal(true)}
         onLogoutSuccessful={() => {
           setLoggedInUser(null)
+          navigate("/")
         }}
       />
 
@@ -64,6 +73,9 @@ const AppContent = () => {
             {loggedInUser?.role === "admin" && (
               <Route path="/createuser" element={<CreateUserPage />} />
             )}
+            {loggedInUser?.role === "admin" && (
+              <Route path="/reset-password" element={<ResetPassword />} />
+            )}
           </Routes>
         ) : (
           <div className="text-center">
@@ -76,7 +88,7 @@ const AppContent = () => {
   )
 }
 
-// Componente wrapper que fornece o BrowserRouter
+//Wrapper component to browserRoutes
 const App = () => {
   return (
     <EventProvider>

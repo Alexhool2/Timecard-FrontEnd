@@ -3,6 +3,8 @@ import { useEvent } from "../context/useEvent"
 import { Button } from "react-bootstrap"
 import ConfirmModal from "./ConfirmModal"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const EndLunchButton = () => {
   const { eventId } = useEvent()
   const [showModal, setShowModal] = useState(false)
@@ -14,17 +16,14 @@ const EndLunchButton = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8081/api/v1/event/end-lunch/${eventId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const response = await fetch(`${API_URL}/event/end-lunch/${eventId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          credentials: "include",
-        }
-      )
+        credentials: "include",
+      })
 
       if (!response.ok) {
         const errorMessage = await response.json()

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Badge, Button, Form, ListGroup, Spinner } from "react-bootstrap"
 
+const API_URL = import.meta.env.VITE_API_URL
 interface User {
   id: number
   firstName: string
@@ -28,13 +29,10 @@ const UserSearch = ({
 
     setIsLoading(true)
     try {
-      const response = await fetch(
-        `http://localhost:8081/api/v1/users?search=${term}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      )
+      const response = await fetch(`${API_URL}/users?search=${term}`, {
+        method: "GET",
+        credentials: "include",
+      })
       const data = await response.json()
       setUsers(data || [])
     } catch (error) {

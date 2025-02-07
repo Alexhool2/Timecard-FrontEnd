@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Button, Col, Row, Table } from "react-bootstrap"
 import Calendar from "react-calendar"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const SearchSingleDate = ({ userId }: { userId: number | null }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +24,7 @@ const SearchSingleDate = ({ userId }: { userId: number | null }) => {
       const dateStr = adjustedDate.toISOString().split("T")[0]
 
       const response = await fetch(
-        `http://localhost:8081/api/v1/event/user/${userId}/date?date=${dateStr}`,
+        `${API_URL}/event/user/${userId}/date?date=${dateStr}`,
         {
           method: "GET",
           credentials: "include",

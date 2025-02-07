@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Button, Col, Row, Table } from "react-bootstrap"
 import Calendar from "react-calendar"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface EventData {
   event_id: number
   userId: number
@@ -39,7 +41,7 @@ const SearchMultiplesDates = ({ userId }: { userId: number | null }) => {
       const endDateStr = adjustTimezone(endDate)
 
       const response = await fetch(
-        `http://localhost:8081/api/v1/event/user/${userId}/period?start_date=${startDateStr}&end_date=${endDateStr}`,
+        `${API_URL}/event/user/${userId}/period?start_date=${startDateStr}&end_date=${endDateStr}`,
         {
           method: "GET",
           credentials: "include",
@@ -52,6 +54,19 @@ const SearchMultiplesDates = ({ userId }: { userId: number | null }) => {
       const data = await response.json()
 
       setEvents(data.length ? data : null)
+      if (data.length > 30) {
+        alert("only possible to search in the range of 30 days")
+        return
+      }
+
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      tomorrow.setHours(0, 0, 0, 0)
+
+      if (startDate > tomorrow || endDate > tomorrow) {
+        alert("You cannot search for future dates, please try again")
+        return
+      }
     } catch (error) {
       console.error("Error finding events:", error)
       setEvents(null)

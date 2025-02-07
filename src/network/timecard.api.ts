@@ -1,5 +1,8 @@
 import { ConflictError, UnauthorizedError } from "../errors/http_errors"
 
+const API_URL = import.meta.env.VITE_API_URL
+console.log("API URL:", API_URL)
+
 async function fetchData(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, {
     ...init,
@@ -24,10 +27,6 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
     }
   }
 }
-// export interface LoggedInUser {
-//   id: number
-//   userName: string
-// }
 
 export interface LoginCredentials {
   userName: string
@@ -43,7 +42,7 @@ export interface LoggedUser {
 export async function login(
   credentials: LoginCredentials
 ): Promise<LoggedUser> {
-  const response = await fetchData("http://localhost:8081/api/v1/users/login", {
+  const response = await fetchData(`${API_URL}/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
 
@@ -76,7 +75,7 @@ export async function getLoggedInUser(): Promise<{
   eventID: number | null
   role: string
 }> {
-  const response = await fetchData("http://localhost:8081/api/v1/users/me", {
+  const response = await fetchData(`${API_URL}/users/me`, {
     method: "GET",
     credentials: "include",
   })
@@ -90,22 +89,19 @@ export async function getLoggedInUser(): Promise<{
 }
 
 export async function logout() {
-  const response = await fetchData(
-    "http://localhost:8081/api/v1/users/logout",
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  )
+  const response = await fetchData(`${API_URL}/users/logout`, {
+    method: "POST",
+    credentials: "include",
+  })
 
   return response.json()
 }
 
 export async function getUserEvents(userId: number, date: string) {
-  const response = await fetch(
-    `http://localhost:8081/api/v1/event/user/${userId}?date=${date}`,
-    { method: "GET", credentials: "include" }
-  )
+  const response = await fetch(`${API_URL}/event/user/${userId}?date=${date}`, {
+    method: "GET",
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error("error finding event")
   }
@@ -123,7 +119,7 @@ export interface GetAllUsersInterface {
 }
 
 export async function getAllUsers(): Promise<GetAllUsersInterface[]> {
-  const response = await fetchData("http://localhost:8081/api/v1/users/", {
+  const response = await fetchData(`${API_URL}/users/`, {
     method: "GET",
     credentials: "include",
   })
@@ -145,20 +141,32 @@ export interface CreateUserInterface {
 export async function createUser(
   user: CreateUserInterface
 ): Promise<CreateUserInterface> {
-  const response = await fetchData(
-    "http://localhost:8081/api/v1/users/create",
-    {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(user),
-    }
-  )
+  const response = await fetchData(`${API_URL}/users/create`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(user),
+  })
   if (!response.ok) {
     throw new Error("error creating user")
   }
 
   if (response.ok) {
     return user
+  }
+  return await response.json()
+}
+
+export async function changePassword(userId: number, newPassword: string) {
+  const response = await fetchData(
+    `${API_URL}/users/${userId}/reset-password`,
+    {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify({ newPassword }),
+    }
+  )
+  if (!response.ok) {
+    throw new Error("error updating user")
   }
   return await response.json()
 }
