@@ -29,7 +29,7 @@ const UserSearch = ({
 
     setIsLoading(true)
     try {
-      const response = await fetch(`${API_URL}/users?search=${term}`, {
+      const response = await fetch(`${API_URL}/api/v1/users?search=${term}`, {
         method: "GET",
         credentials: "include",
       })
@@ -55,9 +55,13 @@ const UserSearch = ({
     setUsers([])
     setSearchTerm("")
   }
-
+  //VERIFICAR PROBLEMAS NA BUSCA DOS USUARIOS E HORARIOS RETORNADOS
   const handleRemoveUser = (id: number) => {
     setSelectedUsers(selectedUsers.filter((user) => user.id !== id))
+    setUsers([])
+    setSearchTerm("")
+    localStorage.clear()
+    onSelectUser(0)
   }
 
   return (

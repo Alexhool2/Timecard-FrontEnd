@@ -17,14 +17,17 @@ const StartLunchButton = () => {
       return
     }
     try {
-      const response = await fetch(`${API_URL}/event/start-lunch/${eventId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(
+        `${API_URL}/api/v1/event/start-lunch/${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        credentials: "include",
-      })
+          credentials: "include",
+        }
+      )
 
       if (!response.ok) {
         const errorMessage = await response.json()

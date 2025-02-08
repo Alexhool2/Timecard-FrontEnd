@@ -42,15 +42,13 @@ export interface LoggedUser {
 export async function login(
   credentials: LoginCredentials
 ): Promise<LoggedUser> {
-  const response = await fetchData(`${API_URL}/users/login`, {
+  const response = await fetchData(`${API_URL}/api/v1/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
 
     body: JSON.stringify(credentials),
   })
-
   const data = await response.json()
-
   const user: LoggedUser = {
     id: data.user.id,
     userName: data.user.userName,
@@ -75,7 +73,7 @@ export async function getLoggedInUser(): Promise<{
   eventID: number | null
   role: string
 }> {
-  const response = await fetchData(`${API_URL}/users/me`, {
+  const response = await fetchData(`${API_URL}/api/v1/users/me`, {
     method: "GET",
     credentials: "include",
   })
@@ -89,7 +87,7 @@ export async function getLoggedInUser(): Promise<{
 }
 
 export async function logout() {
-  const response = await fetchData(`${API_URL}/users/logout`, {
+  const response = await fetchData(`${API_URL}/api/v1/users/logout`, {
     method: "POST",
     credentials: "include",
   })
@@ -98,10 +96,13 @@ export async function logout() {
 }
 
 export async function getUserEvents(userId: number, date: string) {
-  const response = await fetch(`${API_URL}/event/user/${userId}?date=${date}`, {
-    method: "GET",
-    credentials: "include",
-  })
+  const response = await fetch(
+    `${API_URL}/api/v1/event/user/${userId}?date=${date}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  )
   if (!response.ok) {
     throw new Error("error finding event")
   }
@@ -119,7 +120,7 @@ export interface GetAllUsersInterface {
 }
 
 export async function getAllUsers(): Promise<GetAllUsersInterface[]> {
-  const response = await fetchData(`${API_URL}/users/`, {
+  const response = await fetchData(`${API_URL}/api/v1/users/`, {
     method: "GET",
     credentials: "include",
   })
@@ -141,7 +142,7 @@ export interface CreateUserInterface {
 export async function createUser(
   user: CreateUserInterface
 ): Promise<CreateUserInterface> {
-  const response = await fetchData(`${API_URL}/users/create`, {
+  const response = await fetchData(`${API_URL}/api/v1/users/create`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(user),
@@ -158,7 +159,7 @@ export async function createUser(
 
 export async function changePassword(userId: number, newPassword: string) {
   const response = await fetchData(
-    `${API_URL}/users/${userId}/reset-password`,
+    `${API_URL}/api/v1/users/${userId}/reset-password`,
     {
       method: "PUT",
       credentials: "include",

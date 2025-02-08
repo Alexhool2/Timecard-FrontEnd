@@ -41,7 +41,7 @@ const SearchMultiplesDates = ({ userId }: { userId: number | null }) => {
       const endDateStr = adjustTimezone(endDate)
 
       const response = await fetch(
-        `${API_URL}/event/user/${userId}/period?start_date=${startDateStr}&end_date=${endDateStr}`,
+        `${API_URL}/api/v1/event/user/${userId}/period?start_date=${startDateStr}&end_date=${endDateStr}`,
         {
           method: "GET",
           credentials: "include",

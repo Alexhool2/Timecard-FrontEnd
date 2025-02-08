@@ -1,22 +1,35 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, Col, Row, Table } from "react-bootstrap"
 import Calendar from "react-calendar"
 
 const API_URL = import.meta.env.VITE_API_URL
 
+interface EventData {
+  eventId: number | null
+  userId: number | null
+  date: string | null
+  startTime: string | null
+  startLunch: string | null
+  endLunch: string | null
+  endTime: string | null
+  userName: string | null
+  firstName: string | null
+  lastName: string | null
+  role: string | null
+}
+
 const SearchSingleDate = ({ userId }: { userId: number | null }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [events, setEvents] = useState<any | null>(null)
+  const [events, setEvents] = useState<EventData | null>(null)
   const [hasSearched, setHasSearched] = useState(false)
 
   const fetchEvents = async () => {
     if (!userId || typeof userId !== "number") {
       setHasSearched(false)
+      setEvents(null)
       return
     }
     try {
-      //adjusting timezone
       const adjustedDate = new Date(selectedDate)
       adjustedDate.setMinutes(
         adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset()
@@ -24,7 +37,7 @@ const SearchSingleDate = ({ userId }: { userId: number | null }) => {
       const dateStr = adjustedDate.toISOString().split("T")[0]
 
       const response = await fetch(
-        `${API_URL}/event/user/${userId}/date?date=${dateStr}`,
+        `${API_URL}/api/v1/event/user/${userId}/date?date=${dateStr}`,
         {
           method: "GET",
           credentials: "include",
@@ -32,27 +45,31 @@ const SearchSingleDate = ({ userId }: { userId: number | null }) => {
       )
       setHasSearched(true)
       if (!response.ok) {
+        setEvents(null)
         throw new Error(`Err ${response.status}: ${await response.text()}`)
       }
       const data = await response.json()
+      if (data.user_id != userId) {
+        setEvents(null)
+        return
+      }
 
-      const formattedEvent = {
-        eventId: data.event_id,
-        userId: data.user_id,
-        date: data.date,
-        startTime: data.start_time,
-        startLunch: data.start_lunch,
-        endLunch: data.end_lunch,
-        endTime: data.end_time,
-        userName: data.user_name,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        role: data.role,
+      const formattedEvent: EventData = {
+        eventId: data.event_id || null,
+        userId: data.user_id || null,
+        date: data.date || null,
+        startTime: data.start_time || null,
+        startLunch: data.start_lunch || null,
+        endLunch: data.end_lunch || null,
+        endTime: data.end_time || null,
+        userName: data.user_name || null,
+        firstName: data.first_name || null,
+        lastName: data.last_name || null,
+        role: data.role || null,
       }
 
       setEvents(formattedEvent)
-    } catch (error) {
-      console.error("Error finding events:", error)
+    } catch {
       setEvents(null)
     }
   }
@@ -94,7 +111,10 @@ const SearchSingleDate = ({ userId }: { userId: number | null }) => {
         <Row className="mt-4">
           <Col>
             <p className="fw-bold fs-5 text-dark">
-              Date: {new Date(events.date).toISOString().split("T")[0]}
+              Date:{" "}
+              {events.date
+                ? new Date(events.date).toISOString().split("T")[0]
+                : "No date"}
             </p>
           </Col>
         </Row>

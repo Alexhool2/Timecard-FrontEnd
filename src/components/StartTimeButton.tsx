@@ -15,7 +15,7 @@ const StartTimeButton = ({ userId }: StartTimeProps) => {
 
   const handleStart = async () => {
     try {
-      const response = await fetch(`${API_URL}/event/create`, {
+      const response = await fetch(`${API_URL}/api/v1/event/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

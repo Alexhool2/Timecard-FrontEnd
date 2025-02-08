@@ -16,14 +16,17 @@ const EndLunchButton = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/event/end-lunch/${eventId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(
+        `${API_URL}/api/v1/event/end-lunch/${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        credentials: "include",
-      })
+          credentials: "include",
+        }
+      )
 
       if (!response.ok) {
         const errorMessage = await response.json()
